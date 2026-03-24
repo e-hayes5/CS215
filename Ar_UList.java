@@ -1,11 +1,13 @@
+
+
 public class Ar_UList {
 	//Use private variables to preserve Encapsulation 
-	public static final int MAXSIZE = 10;	
+	public static final int MAXSIZE = 1000000;	
 	private int[] ListItems;
 	private int length;
 	private int currentPos = 0;
 	
-	public Ar_UList() {
+	public Ar_UListCC() {
 		length = 0; //a newly constructed list has 0 elements
 		ListItems = new int[MAXSIZE];
 	}
@@ -17,7 +19,7 @@ public class Ar_UList {
 	  return length;
 	}
 
-	int getItem(int gitem) {
+	int getItem(CCFraudRecord gitem) {
 		int searchiter;
 		for (searchiter = length-1; searchiter>=0; searchiter--) { //main loop decrements from the final index in the list down to -1 
 			if (ListItems[searchiter] == gitem) //if this condition is met, we have a match
@@ -30,35 +32,25 @@ public class Ar_UList {
 		length = 0; //as with the constructor, we need do nothing to the actual array, as it now "junk" data
 	}
 	
-	void putItem(int pitem) {
+	void putItem(CCFraudRecord pitem) throws Exception {
+		if (this.isFull()) {
+			throw new Exception("List is full -- unable to add new item.");
+		}
 		 ListItems[length] = pitem; //Reminder that Java uses 0-indexing.
 		 length++;
 	}
-	
-	void deleteItemShift(int ditem) { //This is the less efficient version of what we discussed ("Move-Up") that maintains list order		
-		boolean indexfound=false;
-		for (int loc=0; loc<length; loc++) {
-			if (ListItems[loc]==ditem) 
-				indexfound=true;
-			if (indexfound && loc < MAXSIZE - 1)
-				ListItems[loc]=ListItems[loc+1];	
-		}
-		length--;
-	}
-
-	void deleteItemSwap(int ditem) { //This is the more efficient version of what we discussed ("Swap") that is a little bit easier and faster		
+		
+	void deleteItem(int ditem_time) throws Exception { //This is the more efficient version of what we discussed ("Swap") that is a little bit easier and faster		
+		  boolean indexfound=false;
 		  for (int loc=0; loc<length; loc++) {
-			  if (ListItems[loc]==ditem) { 
+			  if (ListItems[loc]==ditem_time) { 
+				  indexfound=true;
 				  ListItems[loc] = ListItems[length-1];
-				  return;
 			  }
 		  }
-		 
-	}
-
-	
-	void deleteItem(int ditem) {
-		deleteItemShift(ditem);
+		  if (!indexfound)
+			  throw new Exception("Value not present in list -- unable to delete.");
+		  length--;
 	}
 	
 	void resetList() {
@@ -66,18 +58,20 @@ public class Ar_UList {
 	}
 
 	
-	int getNextItem() {
+	CCFraudRecord getNextItem() throws Exception {
+		if (currentPos == length)
+			throw new Exception("End of list has been reached.");
 		//Possibly counter-intuitive, but we want to return the item at the current index AND increment it
 		currentPos++;
 		return ListItems[currentPos-1];   
 	}
 
 	void printList() { //simple function to print a list's items in stored order
-		System.out.print("(");
+		System.out.print("(Time, Amount, Class:");
 		for (int loc=0; loc<length; loc++) {
-		  	System.out.print(ListItems[loc]);
+		  	System.out.print(ListItems[loc].time + ", "+ListItems[loc].amount+", "+ ListItems[loc].fraudc);
 			if (loc<length-1)
-		  	  System.out.print(", ");
+		  	  System.out.print(";\n");
 		}
 		System.out.println(")");
 	}
